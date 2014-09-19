@@ -1,0 +1,2 @@
+getent group docker > /dev/null || /usr/sbin/groupadd -r docker
+exit 0
