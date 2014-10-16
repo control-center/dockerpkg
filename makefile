@@ -68,22 +68,11 @@ docker-rpm: $(FULL_NAME)-build
 $(FULL_NAME)-build:
 	docker build -t zenoss/$(FULL_NAME)-build:$(VERSION) hack
 
-$(PKGROOT)$(DOCKER_BIN_DIR)/nsenter:
-	cd /tmp; \
-	wget https://www.kernel.org/pub/linux/utils/util-linux/v2.24/util-linux-2.24.tar.bz2; \
-	bzip2 -d -c /tmp/util-linux-2.24.tar.bz2 | tar xvf -; \
-	cd util-linux-2.24/; \
-	./configure --without-ncurses --prefix=/usr/local/util-linux; \
-	make; \
-	make install; \
-	mkdir -p $(PKGROOT)$(DOCKER_BIN_DIR)
-	cp -p /usr/local/util-linux/bin/nsenter $(PKGROOT)$(DOCKER_BIN_DIR)
-
-stage_pkg: $(FULL_NAME) $(PKGROOT)$(DOCKER_BIN_DIR)/nsenter
+stage_pkg: $(FULL_NAME)
 	mkdir -p $(PKGROOT)
 	cp -rv $(FULL_NAME)/* $(PKGROOT)/
 	mkdir -p $(PKGROOT)$(DOCKER_BIN_DIR)
-	wget https://get.docker.io/builds/Linux/x86_64/docker-1.2.0 -O $(PKGROOT)$(DOCKER_BIN_DIR)/$(DOCKER_BIN)
+	wget https://get.docker.io/builds/Linux/x86_64/docker-1.3.0 -O $(PKGROOT)$(DOCKER_BIN_DIR)/$(DOCKER_BIN)
 	chmod +x $(PKGROOT)$(DOCKER_BIN_DIR)/$(DOCKER_BIN)
 
 tgz: stage_pkg
@@ -119,7 +108,7 @@ rpm: stage_pkg
 		-n $(ACTUAL_PKG_NAME) \
 		-f \
 		-p /tmp \
-		--provides 'docker = 1.2.0' \
+		--provides 'docker = 1.3.0' \
 		.
 	chown $(DUID):$(DGID) /tmp/*.rpm
 	cp -p /tmp/*.rpm .
