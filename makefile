@@ -17,6 +17,7 @@
 URL           = https://github.com/control-center/dockerpkg
 FULL_NAME     = $(shell basename $(URL))
 VERSION      := $(shell cat ./VERSION)
+ITERATION    := 1
 DATE         := $(shell date -u)
 GIT_COMMIT   ?= $(shell ./hack/gitstatus.sh)
 GIT_BRANCH   ?= $(shell git rev-parse --abbrev-ref HEAD)
@@ -72,7 +73,7 @@ stage_pkg: $(FULL_NAME)
 	mkdir -p $(PKGROOT)
 	cp -rv $(FULL_NAME)/* $(PKGROOT)/
 	mkdir -p $(PKGROOT)$(DOCKER_BIN_DIR)
-	wget https://get.docker.io/builds/Linux/x86_64/docker-1.3.0 -O $(PKGROOT)$(DOCKER_BIN_DIR)/$(DOCKER_BIN)
+	wget https://get.docker.io/builds/Linux/x86_64/docker-$(VERSION) -O $(PKGROOT)$(DOCKER_BIN_DIR)/$(DOCKER_BIN)
 	chmod +x $(PKGROOT)$(DOCKER_BIN_DIR)/$(DOCKER_BIN)
 
 tgz: stage_pkg
@@ -86,6 +87,7 @@ deb:
 rpm: stage_pkg
 	fpm \
 		-v $(VERSION) \
+		--iteration $(ITERATION) \
 		-s dir \
 		-t rpm \
 		-C $(PKGROOT) \
@@ -108,7 +110,7 @@ rpm: stage_pkg
 		-n $(ACTUAL_PKG_NAME) \
 		-f \
 		-p /tmp \
-		--provides 'docker = 1.3.0' \
+		--provides 'docker = $(VERSION)' \
 		.
 	chown $(DUID):$(DGID) /tmp/*.rpm
 	cp -p /tmp/*.rpm .
