@@ -1,22 +1,22 @@
 # Copyright (C) 2014 Zenoss, Inc
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# dockerpkg is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 2 of the License, or
-# (at your option) any later version.
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
-# dockerpkg is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Foobar. If not, see <http://www.gnu.org/licenses/>.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 ## setup all environment stuff
 URL           = https://github.com/control-center/dockerpkg
 FULL_NAME     = $(shell basename $(URL))
 VERSION      := $(shell cat ./VERSION)
+ITERATION    := 1
 DATE         := $(shell date -u)
 GIT_COMMIT   ?= $(shell ./hack/gitstatus.sh)
 GIT_BRANCH   ?= $(shell git rev-parse --abbrev-ref HEAD)
@@ -26,9 +26,9 @@ LDFLAGS       = -ldflags "-X main.Version $(VERSION) -X main.Gitcommit '$(GIT_CO
 
 MAINTAINER    = dev@zenoss.com
 # https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/#license-specification
-DEB_LICENSE   = "GPL-2.0"
+DEB_LICENSE   = Apache-2
 # https://fedoraproject.org/wiki/Licensing:Main?rd=Licensing
-RPM_LICENSE   = "GPLv2"
+RPM_LICENSE   = "ASL 2.0"
 VENDOR        = Zenoss
 PKGROOT       = /tmp/$(FULL_NAME)-pkgroot-$(GIT_COMMIT)
 DUID         ?= $(shell id -u)
@@ -72,7 +72,7 @@ stage_pkg: $(FULL_NAME)
 	mkdir -p $(PKGROOT)
 	cp -rv $(FULL_NAME)/* $(PKGROOT)/
 	mkdir -p $(PKGROOT)$(DOCKER_BIN_DIR)
-	wget https://get.docker.io/builds/Linux/x86_64/docker-1.3.0 -O $(PKGROOT)$(DOCKER_BIN_DIR)/$(DOCKER_BIN)
+	wget https://get.docker.io/builds/Linux/x86_64/docker-$(VERSION) -O $(PKGROOT)$(DOCKER_BIN_DIR)/$(DOCKER_BIN)
 	chmod +x $(PKGROOT)$(DOCKER_BIN_DIR)/$(DOCKER_BIN)
 
 tgz: stage_pkg
@@ -86,6 +86,7 @@ deb:
 rpm: stage_pkg
 	fpm \
 		-v $(VERSION) \
+		--iteration $(ITERATION) \
 		-s dir \
 		-t rpm \
 		-C $(PKGROOT) \
@@ -108,7 +109,7 @@ rpm: stage_pkg
 		-n $(ACTUAL_PKG_NAME) \
 		-f \
 		-p /tmp \
-		--provides 'docker = 1.3.0' \
+		--provides 'docker = $(VERSION)' \
 		.
 	chown $(DUID):$(DGID) /tmp/*.rpm
 	cp -p /tmp/*.rpm .
