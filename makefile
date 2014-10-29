@@ -16,7 +16,7 @@
 URL           = https://github.com/control-center/dockerpkg
 FULL_NAME     = $(shell basename $(URL))
 VERSION      := $(shell cat ./VERSION)
-ITERATION    := 2
+ITERATION    := 3
 DATE         := $(shell date -u)
 GIT_COMMIT   ?= $(shell ./hack/gitstatus.sh)
 GIT_BRANCH   ?= $(shell git rev-parse --abbrev-ref HEAD)
@@ -102,6 +102,7 @@ rpm: stage_pkg
 		-d "git >= 1.7" \
 		-d "procps" \
 		-d "xz >= 4.9" \
+		-d "dnsmasq" \
 		--before-install $(PWD)/$(RPM_SCRIPTS_PATH)/$(PREINSTALL) \
 		--after-install $(PWD)/$(RPM_SCRIPTS_PATH)/$(POSTINSTALL) \
 		--before-remove $(PWD)/$(RPM_SCRIPTS_PATH)/$(PREUNINSTALL) \
