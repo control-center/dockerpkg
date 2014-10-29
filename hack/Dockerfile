@@ -1,4 +1,4 @@
-FROM zenoss/centos:centos7
+FROM centos:centos7
 MAINTAINER Zenoss, Inc <dev@zenoss.com>	
 
 RUN yum update -y
