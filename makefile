@@ -16,7 +16,7 @@
 URL           = https://github.com/control-center/dockerpkg
 FULL_NAME     = $(shell basename $(URL))
 VERSION      := $(shell cat ./VERSION)
-ITERATION    := 1
+ITERATION    := 2
 DATE         := $(shell date -u)
 GIT_COMMIT   ?= $(shell ./hack/gitstatus.sh)
 GIT_BRANCH   ?= $(shell git rev-parse --abbrev-ref HEAD)
@@ -111,6 +111,7 @@ rpm: stage_pkg
 		-f \
 		-p /tmp \
 		--provides 'docker = $(VERSION)' \
+		--config-files /etc/sysconfig/docker \
 		.
 	chown $(DUID):$(DGID) /tmp/*.rpm
 	cp -p /tmp/*.rpm .
