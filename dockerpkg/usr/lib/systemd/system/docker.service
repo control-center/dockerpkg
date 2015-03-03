@@ -7,7 +7,7 @@ Requires=docker.socket
 [Service]
 Type=notify
 EnvironmentFile=-/etc/sysconfig/docker
-ExecStart=/usr/bin/docker -d $DOCKER_OPTS -H fd://
+ExecStart=/usr/bin/docker -d $DOCKER_OPTS
 Restart=on-failure
 MountFlags=slave
 LimitNOFILE=1048576
