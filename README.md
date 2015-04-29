@@ -19,8 +19,8 @@ To update the version of Docker (and this package), the following should be chan
         wget http://cbs.centos.org/repos/virt7-testing/x86_64/os/Packages/docker-1.6.0-1.el7.x86_64.rpm
         rpm2cpio docker-1.6.0-1.el7.x86_64.rpm | cpio -idmv
         cdz dockerpkg
-        tar -C /tmp/1.6.0/centos -czf - etc usr | tar -C dockerpkg -xzf -
-        cp dockerpkg/usr/share/bash-completion/completions/docker dockerpkg/etc/bash_completion.d/docker.bash
+        rm -fr dockerpkg/{etc,usr}
+        tar -C /tmp/1.6.0 -czf - etc usr | tar -C dockerpkg -xzf -
 
 
 TODO
