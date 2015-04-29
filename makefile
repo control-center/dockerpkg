@@ -16,7 +16,7 @@
 URL           = https://github.com/control-center/dockerpkg
 FULL_NAME     = $(shell basename $(URL))
 VERSION      := $(shell cat ./VERSION)
-ITERATION    := 2
+ITERATION    := 1
 DATE         := $(shell date -u)
 GIT_COMMIT   ?= $(shell ./hack/gitstatus.sh)
 GIT_BRANCH   ?= $(shell git rev-parse --abbrev-ref HEAD)
