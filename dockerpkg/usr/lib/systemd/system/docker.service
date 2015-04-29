@@ -1,18 +1,23 @@
 [Unit]
 Description=Docker Application Container Engine
-Documentation=http://docs.docker.io
-After=network.target docker.socket
-Requires=docker.socket
+Documentation=http://docs.docker.com
+After=network.target
 
 [Service]
 Type=notify
 EnvironmentFile=-/etc/sysconfig/docker
-ExecStart=/usr/bin/docker -d $DOCKER_OPTS
-Restart=on-failure
-MountFlags=slave
+EnvironmentFile=-/etc/sysconfig/docker-storage
+EnvironmentFile=-/etc/sysconfig/docker-network
+Environment=GOTRACEBACK=crash
+ExecStart=/usr/bin/docker -d \
+          $OPTIONS \
+          $DOCKER_STORAGE_OPTIONS \
+          $DOCKER_NETWORK_OPTIONS \
+          $INSECURE_REGISTRY
 LimitNOFILE=1048576
 LimitNPROC=1048576
+LimitCORE=infinity
+MountFlags=slave
 
 [Install]
 WantedBy=multi-user.target
-
