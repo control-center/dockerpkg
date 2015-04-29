@@ -13,9 +13,18 @@ To update the version of Docker (and this package), the following should be chan
  3. Pull and replace an updated bash completion script from the official Docker repo
  4. Review and (if necessary) pull in any systemd service changes in the official Docker repo
 
+    For Example:
+        mkdir /tmp/1.6.0
+        cd /tmp/1.6.0
+        wget http://cbs.centos.org/repos/virt7-testing/x86_64/os/Packages/docker-1.6.0-1.el7.x86_64.rpm
+        rpm2cpio docker-1.6.0-1.el7.x86_64.rpm | cpio -idmv
+        cdz dockerpkg
+        tar -C /tmp/1.6.0/centos -czf - etc usr | tar -C dockerpkg -xzf -
+        cp dockerpkg/usr/share/bash-completion/completions/docker dockerpkg/etc/bash_completion.d/docker.bash
+
+
 TODO
 ----
--  Put manpages in
 -  See if it would be easier to contribute to get.docker.io
 -  Jenkify this
 
